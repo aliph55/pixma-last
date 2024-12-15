@@ -1,0 +1,7 @@
+<resources>
+  <string name="app_name">pixma</string>
+  <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
+  <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
+  <string name="server_client_id">242071167183-sbpi9d98nc7qrdjikrh6t268i56gde5l.apps.googleusercontent.com</string>
+  <string name="expo_system_ui_user_interface_style" translatable="false">light</string>
+</resources>

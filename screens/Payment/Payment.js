@@ -23,23 +23,6 @@ const Payment = ({ navigation }) => {
   // const user = useSelector((state) => state.user);
   const [userInfo, setUserInfo] = useState();
 
-  const getCurrentUserInfo = async () => {
-    try {
-      const currentUser = await GoogleSignin.getCurrentUser();
-      if (currentUser) {
-        setUserInfo({ currentUser });
-      }
-      // dispatch(logIn(userInfo));
-      if (userInfo.type === "success") {
-      }
-    } catch (error) {
-      // console.log(error);
-    }
-  };
-  // console.log(userInfo?.currentUser?.user?.email);
-  useEffect(() => {
-    getCurrentUserInfo();
-  }, []);
   // userInfo?.currentUser?.user?.email
   //Make sure to start your local server with nodemon index.js before running this, otherwise your local server will not receive your requests
   const fetchPaymentIntentClientSecret = async () => {

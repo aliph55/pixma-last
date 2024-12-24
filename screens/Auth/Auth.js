@@ -5,17 +5,23 @@ import {
 } from "@react-native-google-signin/google-signin";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { logIn } from "../../redux/User";
+import { auth, logIn } from "../../redux/User";
 import { useWindowDimensions, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const Auth = () => {
   const navigation = useNavigation();
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => null,
+    });
+  });
+
   GoogleSignin.configure({
-    scopes: ["https://www.googleapis.com/auth/drive.readonly"], // what API you want to access on behalf of the user, default is email and profile
+    scopes: ["https://www.googleapis.com/auth/userinfo.profile"], // what API you want to access on behalf of the user, default is email and profile
     webClientId:
-      "242071167183-v3cn2mh2870vrp39j4q5j37b5g5bfmds.apps.googleusercontent.com", // client ID of type WEB for your server (needed to verify user ID and offline access). Required to get the `idToken` on the user object!
+      "242071167183-u37vorjtbdpu5apfb2h8c18qr4usl151.apps.googleusercontent.com", // client ID of type WEB for your server (needed to verify user ID and offline access). Required to get the `idToken` on the user object!
     iosClientId:
       "242071167183-gpgntbhflrba9lt1enf59f261qa4h2h2.apps.googleusercontent.com",
   });
@@ -41,7 +47,8 @@ const Auth = () => {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
             if (userInfo.type === "success") {
-              dispatch(logIn(userInfo));
+              dispatch(auth(userInfo?.data?.user));
+              // console.log(userInfo?.data?.user);
               navigation.navigate("Home");
             }
             // console.log(JSON.stringify(userInfo));

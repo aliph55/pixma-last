@@ -11,6 +11,13 @@ dist/
 web-build/
 expo-env.d.ts
 
+/android
+/ios
+
+# Ignore test coverage reports
+
+/coverage
+
 # Native
 
 _.orig._

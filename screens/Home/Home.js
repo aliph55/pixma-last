@@ -21,7 +21,7 @@ import globalStyle from "../../assets/styles/globalStyle";
 import style from "./style";
 import { updateSelectedDonationId } from "../../redux/Donations";
 import { updateSelectedCategoryId } from "../../redux/Categories";
-import { logIn, resetToInitialState } from "../../redux/User";
+import { resetToInitialState } from "../../redux/User";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 const userProfile =
   "https://cdn.dribbble.com/users/1577045/screenshots/4914645/media/028d394ffb00cb7a4b2ef9915a384fd9.png?compress=1&resize=400x300&vertical=top";
@@ -29,9 +29,8 @@ const userProfile =
 const Home = ({ navigation }) => {
   const { width, height } = useWindowDimensions();
 
-  const user = useSelector((state) => state.user);
-  const [info, setInfo] = useState(undefined);
-  // const userInfo = useSelector((state) => state.user.isLoggedIn);
+  const user = useSelector((state) => state.user?.userInfo);
+  const userInfo = useSelector((state) => state.user.isLoggedIn);
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state.categories);
@@ -46,44 +45,13 @@ const Home = ({ navigation }) => {
   const signOut = async () => {
     try {
       await GoogleSignin.signOut();
-      setInfo(undefined);
+      // setInfo(undefined);
       // setState({ user: null }); // Remember to remove the user from your app's state as well
-      navigation.navigate("Auth");
+      navigation.push("Auth");
     } catch (error) {
       console.error(error);
     }
   };
-
-  const getCurrentUserInfo = async () => {
-    try {
-      const userInfo = await GoogleSignin.signInSilently();
-      setInfo(user?.user);
-      dispatch(logIn(userInfo));
-    } catch (error) {
-      if (error.code === statusCodes.SIGN_IN_REQUIRED) {
-        console.log("error", error);
-      } else {
-        console.log("error", error);
-      }
-    }
-  };
-
-  const getCurrentUser = async () => {
-    const currentUser = await GoogleSignin.getCurrentUser();
-    dispatch(logIn(currentUser));
-    setInfo(user?.user);
-    if (currentUser.type === "success") {
-      dispatch(logIn(currentUser));
-    }
-  };
-
-  useEffect(() => {
-    getCurrentUserInfo();
-  }, []);
-
-  useEffect(() => {
-    getCurrentUser();
-  }, []);
 
   useEffect(() => {
     const items = donations.items.filter((value) =>
@@ -111,15 +79,10 @@ const Home = ({ navigation }) => {
   };
 
   const Logout = async () => {
-    if (info !== undefined) {
-      dispatch(resetToInitialState());
-      await signOut();
-    } else {
-      navigation.navigate("Auth");
-    }
+    dispatch(resetToInitialState());
+    // navigation.push("Auth");
+    await signOut();
   };
-
-  // console.log("info ", info);
 
   return (
     <SafeAreaView
@@ -130,15 +93,13 @@ const Home = ({ navigation }) => {
           <View>
             <Text style={style.headerIntroText}>Hello, </Text>
             <View style={style.username}>
-              <Header
-                title={info !== undefined ? info?.name + " 👋" : "Hi there"}
-              />
+              <Header title={userInfo ? user?.name + " 👋" : "Hi there"} />
             </View>
           </View>
           <View>
             <Image
               source={{
-                uri: info !== undefined ? info?.photo : userProfile,
+                uri: userInfo ? user?.photo : userProfile,
               }}
               style={style.profileImage}
               resizeMode={"contain"}
@@ -150,7 +111,7 @@ const Home = ({ navigation }) => {
             >
               <Header
                 type={3}
-                title={user?.user?.name.length > 0 ? "Logout" : "Login"}
+                title={userInfo ? "Logout" : "Login"}
                 color={"#156CF7"}
               />
             </Pressable>

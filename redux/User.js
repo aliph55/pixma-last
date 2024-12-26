@@ -22,16 +22,23 @@ export const User = createSlice({
         ...action.payload,
       };
     },
-    resetToInitialState: () => {
-      return initialState;
+    resetToInitialState: (state) => {
+      state = initialState;
+      state.isLoggedIn = false;
     },
     updateToken: (state, action) => {
       state.token = action.payload;
+    },
+    auth(state, action) {
+      if (action.payload !== undefined) {
+        state.isLoggedIn = true;
+        state.userInfo = action.payload;
+      }
     },
   },
 });
 
 // Exporting the reducers here from the "User" slice
 // makes them available to other parts of the app that want to use it
-export const { logIn, resetToInitialState, updateToken } = User.actions;
+export const { logIn, resetToInitialState, updateToken, auth } = User.actions;
 export default User.reducer;
